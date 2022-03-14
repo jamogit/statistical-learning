@@ -1,7 +1,8 @@
 library(ISLR)
 library(MASS)
 
-# Lineaarinen regressio ja koneoppinen ----
+
+# Lineaarinen regressio ----
 
 ## Yksinkertainen regressiomalli ----
 fix(Auto)
@@ -136,7 +137,28 @@ summary(m.kol3)
 
 ## Boston-data ----
 View(Boston)
-?Boston
 
 m.boston <- lm(crim ~ ., data = Boston)
 summary(m.boston)
+
+
+# Regressio ja koneoppiminen ----
+n <- dplyr::count(Boston)
+set.seed(808)
+t <- sample(1:n$n, 0.7*n$n)
+
+df_train <- Boston[t,]
+df_test <- Boston[-t,]
+
+## Regression Tree ----
+library(rpart)
+
+m.tree <- rpart(crim ~ ., data = df_train)
+m.tree
+
+### Visualisoidaan puu ----
+library(rpart.plot)
+rpart.plot(m.tree, digits = 4, fallen.leaves = TRUE, type = 4, extra = 101)
+
+
+## Model Tree ----
