@@ -162,3 +162,30 @@ rpart.plot(m.tree, digits = 4, fallen.leaves = TRUE, type = 4, extra = 101)
 
 
 ## Model Tree ----
+library(Cubist)
+
+### Jaa data testi- ja treenidataan ----
+n <- dplyr::count(Boston)
+set.seed(808)
+t <- sample(1:n$n, 0.7*n$n)
+df_train <- Boston[t,]
+df_test <- Boston[-t,]
+
+### Treenataan malli ----
+# HUOM! Treenidatasta pitää poistaa riippuva muuttuja crim,
+# joka annetaan omana vektorinaan funktiolle
+m.mtree <- cubist(df_train[-1], df_train$crim)
+
+m.mtree
+
+summary(m.mtree)
+
+### Ennustetaan testidatalla ----
+p.mtree <- predict(m.mtree, df_test)
+
+summary(p.mtree)
+
+cor(p.mtree, df_test$crim)
+# 0,799 eli kohtuullisen korkea korrelaatio
+
+
